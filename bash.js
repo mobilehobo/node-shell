@@ -13,17 +13,17 @@ process.stdin.on('data', function (data) {
 
 
 var done = function (output) {
-  if(pipeSplit.length)
-  {
+  if (pipeSplit.length) {
     runCommand(output);
   }
-  if (output) {
-    process.stdout.write(output);
+  else {
+    if (output)
+      process.stdout.write(output);
+    process.stdout.write('prompt > ');
   }
-  process.stdout.write('prompt > ');
 };
 
-function runCommand(stdin){
+function runCommand(stdin) {
   cmdArr = pipeSplit.shift().split(' ');
   try {
     commands[cmdArr[0]](stdin, cmdArr.slice(1), done);
