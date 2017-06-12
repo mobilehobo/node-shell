@@ -28,11 +28,16 @@ exports.echo = function (stdin, filename, done) {
 };
 
 exports.cat = function (stdin, filename, done) {
-    let file = filename[0];
-    if (!fs.existsSync(filename[0])) {
-        done(filename[0] + ": File does not exist" + '\n');
+    let file;
+    if (stdin)
+        file = stdin.trim();
+    else
+        file = filename[0];
+    console.log(file);
+    if (!fs.existsSync(file)) {
+        done(file + ": File does not exist" + '\n');
     } else {
-        fs.readFile(filename[0], 'utf-8', (err, data) => {
+        fs.readFile(file, 'utf-8', (err, data) => {
             done(data + '\n');
         });
     }
