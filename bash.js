@@ -2,42 +2,32 @@ var commands = require('./commands');
 
 // Output a prompt
 process.stdout.write('prompt > ');
-
+let pipeSplit;
 // The stdin 'data' event fires after a user types in a line
 process.stdin.on('data', function (data) {
   var cmd = data.toString().trim(); // remove the newline
-  let cmdArr = cmd.split(" ");
-  //process.stdout.write('You typed: ' + cmd);
-  switch(cmdArr[0])
-  {
-    case "pwd":
-      commands.pwd('', done);
-      break;
-    case "date":
-      commands.date('', done);
-      break;
-    case "ls":
-      commands.ls('', done);
-      break;
-    case "echo":
-      commands.echo(cmdArr.slice(1), done);
-      break;
-    case "cat":
-    commands.cat(cmdArr[1], done);
-    break;
-    case "head":
-      commands.head(cmdArr[1], done);
-      break;
-    case "tail":
-      commands.tail(cmdArr[1], done);
-      break;
-    default:
-      done('');
-  }
+  pipeSplit = cmd.split(/\s*\|\s*/g);
+  //let cmdArr = pipeSplit.shift().split(" ");
+  runCommand();
 });
 
 
-var done = function(output) {
+var done = function (output) {
+  if(pipeSplit.length)
+  {
+    runCommand(output);
+  }
+  if (output) {
     process.stdout.write(output);
-    process.stdout.write('\nprompt > ');
+  }
+  process.stdout.write('prompt > ');
 };
+
+function runCommand(stdin){
+  cmdArr = pipeSplit.shift().split(' ');
+  try {
+    commands[cmdArr[0]](stdin, cmdArr.slice(1), done);
+  } catch (e) {
+    done((cmdArr[0]) ? cmdArr[0] + " is not a command\n" : '');
+  }
+}

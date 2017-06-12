@@ -1,18 +1,14 @@
 var fs = require('fs');
 
-// exports.prompt = function(filename) {
-//     process.stdout.write('\nprompt > ');
-// };
-
-exports.pwd = function(filename, done) {
-    done(process.cwd());
+exports.pwd = function(stdin, filename, done) {
+    done(process.cwd() + '\n');
 };
 
-exports.date = function(filename, done) {
-    done(new Date().toString());
+exports.date = function(stdin, filename, done) {
+    done(new Date().toString() + '\n');
 };
 
-exports.ls = function(filename, done) {
+exports.ls = function(stdin, filename, done) {
     let output = "";
     fs.readdir('.', (err, data) => {
         data.forEach(file => {
@@ -24,38 +20,49 @@ exports.ls = function(filename, done) {
     });
 };
 
-exports.echo = function(filename, done) {
-    done(filename.join(" "));
+exports.echo = function(stdin, filename, done) {
+    done(filename.join(" ") + '\n');
 };
 
-exports.cat = function(filename, done) {
-    if (!fs.existsSync(filename)) {
-        done(filename + ": File does not exist");
+exports.cat = function(stdin, filename, done) {
+    let file = filename[0];
+    if (!fs.existsSync(filename[0])) {
+        done(filename[0] + ": File does not exist" + '\n');
     } else {
-        fs.readFile(filename, 'utf-8', (err, data) =>{
-            done(data);
+        fs.readFile(filename[0], 'utf-8', (err, data) =>{
+            done(data + '\n');
         });       
     }
 };
 
-exports.head = function(filename, done) {
-    if (!fs.existsSync(filename)) {
-        done(filename + ": File does not exist");
+exports.head = function(stdin, filename, done) {
+    if(stdin)
+    {
+        let split = data.split('\n');
+        done(split.slice(0, 5).join('\n') + '\n');
+    }
+    else if (!fs.existsSync(filename[0])) {
+        done(filename[0] + ": File does not exist" + '\n');
     } else {
-        fs.readFile(filename, 'utf-8', (err, data) => {
+        fs.readFile(filename[0], 'utf-8', (err, data) => {
             let split = data.split('\n');
-            done(split.slice(0, 5).join('\n'));
+            done(split.slice(0, 5).join('\n') + '\n');
         });
     }
 };
 
-exports.tail = function(filename, done) {
-    if (!fs.existsSync(filename)) {
-        done(filename + ": File does not exist");
+exports.tail = function(stdin, filename, done) {
+    if(stdin)
+    {
+        let split = data.split('\n');
+        done(split.slice(-5).join('\n') + '\n');
+    }
+    if (!fs.existsSync(filename[0])) {
+        done(filename[0] + ": File does not exist" + '\n');
     } else {
-        fs.readFile(filename, 'utf-8', (err, data) => {
+        fs.readFile(filename[0], 'utf-8', (err, data) => {
             let split = data.split('\n');
-            done(split.slice(-5).join('\n'));
+            done(split.slice(-5).join('\n') + '\n');
         });
     }
 };
