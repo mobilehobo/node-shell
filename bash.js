@@ -11,27 +11,33 @@ process.stdin.on('data', function (data) {
   switch(cmdArr[0])
   {
     case "pwd":
-      commands.pwd();
+      commands.pwd('', done);
       break;
     case "date":
-      commands.date();
+      commands.date('', done);
       break;
     case "ls":
-      commands.ls();
+      commands.ls('', done);
       break;
     case "echo":
-      commands.echo(cmdArr.slice(1));
+      commands.echo(cmdArr.slice(1), done);
       break;
     case "cat":
-      commands.cat(cmdArr[1]);
-      break;
+    commands.cat(cmdArr[1], done);
+    break;
     case "head":
-      commands.head(cmdArr[1]);
+      commands.head(cmdArr[1], done);
       break;
     case "tail":
-      commands.tail(cmdArr[1]);
+      commands.tail(cmdArr[1], done);
       break;
     default:
-      commands.prompt();
+      done('');
   }
 });
+
+
+var done = function(output) {
+    process.stdout.write(output);
+    process.stdout.write('\nprompt > ');
+};
